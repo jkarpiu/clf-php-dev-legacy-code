@@ -64,6 +64,7 @@ alert($alert); ?>
                         <th>Telefon</th>
                         <th>E-mail</th>
                         <th style="width: 60px;">Level</th>
+                        <th style="width: 60px;">Produkt</th>
                         <th style="width: 50px;">zaznacz</th>
                     </tr>
                 </thead>
@@ -92,6 +93,7 @@ alert($alert); ?>
                         <th>Telefon</th>
                         <th>E-mail</th>
                         <th style="width: 60px;">Level</th>
+                        <th style="width: 60px;">Produkt</th>
                         <th style="width: 50px;">zaznacz</th>
                     </tr>
                 </thead>
@@ -146,12 +148,11 @@ window.onload = function()
     // ZAZNACZ WIELE LEADOW I WYŚWIETL FORMULARZ
     $(document).on('click','.btn-add-task-to-many',function(e)
     {
-        
-
-        
-
-
-
+        $(`.klient-checkbox`).prop( "checked", false);
+        var ile = $(e.target).data('ile')
+        $(`.klient-checkbox:lt(${ile})`).prop( "checked", true );
+        if ($('.klient-checkbox:checked').length && confirm("Czy chcesz wysłać od razu formularz?"))
+            $('#przydziel-zadanie-form').submit()
     });
     
 
@@ -266,17 +267,19 @@ function  pokaz_leady(){
                     var d2 = ((d1.length === 11 || d1.length === 12) && d1.indexOf("48")===0) ? d1.substr(2) : d1;
                     var d3 = ((d2.length === 10) && d2.indexOf("0")===0) ? d2.substr(1) : d2;
                     var d4 = (d3.length === 9 ) ? d3.replace(/^(\d{3})(\d{3})(\d{3})$/, '$1 $2 $3') : v.telefon;
-                    var level = v.level === 'klient' ? '<span class="label label-primary">KLIENT</span>' : '<span class="label label-success">UCZESTNIK</span>';                
+                    var level = v.level === 'klient' ? '<span class="label label-primary">KLIENT</span>' : '<span class="label label-success">UCZESTNIK</span>';
+                    var name =  `<span class="w-100">${v.product_name}</span>`
                     var rowNode = table.row.add( [
                         '<a href="/klientKarta&id='+v.klient_id+'" target="_blank">'+v.klient+'&nbsp;<small><span class="glyphicon glyphicon-new-window"></span></small></a>', 
                         d4,
                         v.email,
                         level,
-                        '<input data-klient-id="'+v.klient_id+'" type="checkbox">'
+                        name,
+                        '<input data-klient-id="'+v.klient_id+'" class="klient-checkbox" pe="checkbox">'
                     ] 
                     ).node();
                     $(rowNode).attr('id','klient-'+v.klient_id+'-row');
-                    $('td:eq(4),td:eq(5)',rowNode).addClass( 'text-center');
+                    $('td:eq(4),td:eq(5),td:eq(6)',rowNode).addClass( 'text-center');
                 });
                 table.draw();
             }
